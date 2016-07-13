@@ -14,7 +14,7 @@ foreach ($site in $sites)
         {   
         Write-host $site.url $site.quota.storagemaximumlevel
         $site.url+","+$site.quota.StorageMaximumLevel+","+$site.quota.StorageWarningLevel+","+$max+","+$warning+",Yes" | Out-File $logfile -append
-        Set-spsite $site -MaxSize $max -WarningSize $warningget
+        Set-spsite $site -MaxSize $max -WarningSize $warning
         }
     else
         {
