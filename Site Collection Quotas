@@ -1,0 +1,24 @@
+Add-PsSnapin Microsoft.SharePoint.PowerShell -Erroraction SilentlyContinue 
+
+$logfile = "D:\temp\SC_Quota.csv"
+"URL,OldMax,OldWarning,NewMax,NewWarning,Modified" | out-file $logfile -append
+
+#Variables for 10 GB Max Quota and 8.5 GB Warning
+$max=10737418240
+$warning=9126805504
+
+$sites=get-spsite -limit all| ?{$_.url -match "teamspace" -and $_.url -notmatch "my-teamspace"}
+foreach ($site in $sites)
+    {
+    if ($site.quota.storageMaximumLevel -ge 2GB -and $site.quota.storageMaximumLevel -le 8GB)
+        {   
+        Write-host $site.url $site.quota.storagemaximumlevel
+        $site.url+","+$site.quota.StorageMaximumLevel+","+$site.quota.StorageWarningLevel+","+$max+","+$warning+",Yes" | Out-File $logfile -append
+        Set-spsite $site -MaxSize $max -WarningSize $warningget
+        }
+    else
+        {
+        $site.url+","+$site.quota.StorageMaximumLevel+","+$site.quota.StorageWarningLevel+",,,No" | Out-File $logfile -append
+        }
+    }
+
